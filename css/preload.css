@@ -1,0 +1,182 @@
+/* ========================================
+   Preload 頁面樣式
+   ======================================== */
+
+/* Preload 容器 */
+.preload__container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, 
+        var(--color-primary-dark) 0%, 
+        var(--color-primary) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* 背景裝飾元素 */
+.preload__container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+        circle at center,
+        rgba(255, 107, 107, 0.05) 0%,
+        transparent 70%
+    );
+    animation: pulseBackground 4s ease-in-out infinite;
+}
+
+/* Logo 容器 */
+.preload__logo-wrapper {
+    position: relative;
+    z-index: 2;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+/* SVG Logo 樣式 */
+.preload__logo {
+    width: 100%;
+    height: auto;
+    max-width: 200px;
+    transform-origin: center center;
+}
+
+/* SVG 路徑初始樣式 */
+.preload__logo path {
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* 進度區域 */
+.preload__progress {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+/* 進度文字 */
+.preload__progress-text {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-light);
+    color: var(--color-neutral-light);
+    opacity: 0.8;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    animation: fadeInUp 1s ease-out 0.5s both;
+}
+
+/* ========================================
+   動畫關鍵影格
+   ======================================== */
+
+/* 背景脈動動畫 */
+@keyframes pulseBackground {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+/* 淡入向上動畫 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 0.8;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   響應式設計
+   ======================================== */
+
+/* 平板裝置 */
+@media screen and (max-width: 768px) {
+    .preload__logo-wrapper {
+        width: 150px;
+        height: 150px;
+        margin-bottom: var(--spacing-xl);
+    }
+    
+    .preload__logo {
+        max-width: 150px;
+    }
+    
+    .preload__progress-text {
+        font-size: var(--font-size-xs);
+    }
+}
+
+/* 手機裝置 */
+@media screen and (max-width: 480px) {
+    .preload__logo-wrapper {
+        width: 120px;
+        height: 120px;
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .preload__logo {
+        max-width: 120px;
+    }
+    
+    .preload__container::before {
+        animation-duration: 6s;
+    }
+}
+
+/* ========================================
+   載入狀態樣式
+   ======================================== */
+
+/* 載入中狀態 */
+.preload--loading .preload__progress-text {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* 完成狀態 */
+.preload--complete .preload__container {
+    transition: opacity var(--duration-slow) var(--easing-out);
+}
+
+/* ========================================
+   深色模式支援（可選）
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+    .preload__container {
+        background: linear-gradient(135deg, 
+            #0a0e1a 0%, 
+            var(--color-primary-dark) 100%);
+    }
+}

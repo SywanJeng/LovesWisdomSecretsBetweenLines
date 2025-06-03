@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>字裡行間的愛情智慧</title>
+    
+    <!-- Google Fonts - Noto Sans TC -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS 檔案 -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/preload.css">
+    <link rel="stylesheet" href="css/intro.css">
+    <link rel="stylesheet" href="css/questions.css">
+    <link rel="stylesheet" href="css/result.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <!-- Preload 頁面 -->
+    <section id="preload" class="page page--active">
+        <div class="preload__container">
+            <div class="preload__logo-wrapper">
+                <!-- SVG Logo 將由 JavaScript 動態載入 -->
+            </div>
+            <div class="preload__progress">
+                <span class="preload__progress-text">載入中...</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Intro 介紹頁面 -->
+    <section id="intro" class="page">
+        <div class="intro__background">
+            <img src="assets/images/intro-background.webp" alt="" class="intro__bg-image">
+        </div>
+        <div class="intro__content">
+            <div class="intro__header">
+                <h1 class="intro__title">
+                    <!-- SVG 將由 JavaScript 動態載入 -->
+                </h1>
+            </div>
+            <div class="intro__text">
+                <p class="intro__description">
+                    我們的愛是封未署名的信箋，散落在那些無人知曉的深夜，飛過高樓與大廈、飛過還沒抵達的承諾，而不知該落在哪扇窗台、不知該寄往何方。今天這個無聲靜謐的夜晚，讓我們一起踏入這場字裡行間，尋訪那些被我們遺落的情感。
+                </p>
+            </div>
+            <button class="intro__start-btn btn btn--primary">
+                <span class="intro__start-text">開始尋訪</span>
+            </button>
+        </div>
+        <!-- 粒子效果容器 -->
+        <div class="intro__particles"></div>
+    </section>
+
+    <!-- Questions 問答頁面 -->
+    <section id="questions" class="page">
+        <div class="questions__background">
+            <img src="" alt="" class="questions__bg-image">
+        </div>
+        <div class="questions__container">
+            <!-- 進度條 -->
+            <div class="questions__progress">
+                <div class="questions__progress-bar">
+                    <div class="questions__progress-fill"></div>
+                </div>
+                <span class="questions__progress-text">
+                    <span class="questions__current">1</span> / <span class="questions__total">11</span>
+                </span>
+            </div>
+            
+            <!-- 問題內容 -->
+            <div class="questions__content">
+                <h2 class="questions__title"></h2>
+                <div class="questions__options"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Result 結果頁面 -->
+    <section id="result" class="page">
+        <div class="result__background">
+            <img src="" alt="" class="result__bg-image">
+        </div>
+        <div class="result__container">
+            <div class="result__content">
+                <h2 class="result__title"></h2>
+                <h3 class="result__subtitle"></h3>
+                <div class="result__description"></div>
+                <div class="result__traits"></div>
+                <div class="result__similar-books"></div>
+                <div class="result__complementary"></div>
+            </div>
+            <button class="result__restart-btn btn btn--secondary">
+                <span class="result__restart-text">重新開始旅程</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- JavaScript 檔案 -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

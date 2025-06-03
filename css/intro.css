@@ -1,0 +1,287 @@
+/* ========================================
+   Intro 頁面樣式
+   ======================================== */
+
+/* Intro 背景容器 */
+.intro__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: var(--z-background);
+    overflow: hidden;
+}
+
+/* 背景圖片 */
+.intro__bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.7);
+    transform: scale(1.1);
+    animation: slowZoom 20s ease-in-out infinite alternate;
+}
+
+/* 內容容器 */
+.intro__content {
+    position: relative;
+    z-index: var(--z-normal);
+    width: 90%;
+    max-width: 800px;
+    text-align: center;
+    padding: var(--spacing-2xl);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* 標題區域 */
+.intro__header {
+    margin-bottom: var(--spacing-2xl);
+    animation: fadeInDown 1s ease-out 0.5s both;
+}
+
+/* 標題 */
+.intro__title {
+    margin-bottom: 0;
+}
+
+/* SVG 標題樣式 */
+.intro__title-svg {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    margin: 0 auto;
+}
+
+.intro__title-svg text {
+    fill: var(--color-accent);
+    font-family: var(--font-family-primary);
+    font-size: 48px;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.05em;
+}
+
+/* 當 SVG 動態載入時的樣式 */
+.intro__title-logo {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    margin: 0 auto;
+}
+
+.intro__title-logo path {
+    fill: var(--color-accent);
+    opacity: 0;
+    animation: fadeIn 1.5s ease-out 0.8s forwards;
+}
+
+/* 描述文字區域 */
+.intro__text {
+    margin-bottom: var(--spacing-3xl);
+    animation: fadeInUp 1s ease-out 0.8s both;
+}
+
+/* 描述文字 */
+.intro__description {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-light);
+    line-height: 1.8;
+    color: var(--color-neutral-light);
+    max-width: 600px;
+    margin: 0 auto;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* 開始按鈕 */
+.intro__start-btn {
+    position: relative;
+    font-size: var(--font-size-lg);
+    padding: var(--spacing-lg) var(--spacing-2xl);
+    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+    color: white;
+    border-radius: var(--border-radius-xl);
+    box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+    animation: fadeInUp 1s ease-out 1s both;
+    overflow: visible; /* 允許爆炸效果溢出 */
+}
+
+.intro__start-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+}
+
+/* 按鈕文字 */
+.intro__start-text {
+    position: relative;
+    z-index: 2;
+    display: inline-block;
+}
+
+/* 文字爆炸效果的粒子容器 */
+.intro__particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: var(--z-overlay);
+}
+
+/* 單個粒子 */
+.particle {
+    position: absolute;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent);
+    animation: particleExplosion 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* ========================================
+   動畫關鍵影格
+   ======================================== */
+
+/* 緩慢縮放動畫（背景） */
+@keyframes slowZoom {
+    0% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1.2);
+    }
+}
+
+/* 淡入向下動畫 */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 淡入向上動畫 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 淡入動畫 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* 粒子爆炸動畫 */
+@keyframes particleExplosion {
+    0% {
+        transform: translate(0, 0) scale(1) rotate(0deg);
+        opacity: 1;
+    }
+    70% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--particle-x), var(--particle-y)) scale(0.3) rotate(var(--particle-rotate));
+        opacity: 0;
+    }
+}
+
+/* 頁面退場動畫 */
+.intro--exiting {
+    animation: pageExit 1s ease-in forwards;
+}
+
+@keyframes pageExit {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.2);
+        filter: blur(20px);
+    }
+}
+
+/* ========================================
+   響應式設計
+   ======================================== */
+
+/* 平板裝置 */
+@media screen and (max-width: 768px) {
+    .intro__content {
+        padding: var(--spacing-xl);
+    }
+    
+    .intro__title-svg text,
+    .intro__title-logo {
+        font-size: 36px;
+        max-width: 400px;
+    }
+    
+    .intro__description {
+        font-size: var(--font-size-md);
+        line-height: 1.7;
+    }
+    
+    .intro__start-btn {
+        font-size: var(--font-size-md);
+        padding: var(--spacing-md) var(--spacing-xl);
+    }
+}
+
+/* 手機裝置 */
+@media screen and (max-width: 480px) {
+    .intro__content {
+        padding: var(--spacing-lg);
+    }
+    
+    .intro__title-svg text,
+    .intro__title-logo {
+        font-size: 28px;
+        max-width: 300px;
+    }
+    
+    .intro__description {
+        font-size: var(--font-size-sm);
+        line-height: 1.6;
+    }
+    
+    .intro__text {
+        margin-bottom: var(--spacing-2xl);
+    }
+}
+
+/* ========================================
+   深色模式支援
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+    .intro__bg-image {
+        filter: brightness(0.5);
+    }
+    
+    .intro__description {
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+}
