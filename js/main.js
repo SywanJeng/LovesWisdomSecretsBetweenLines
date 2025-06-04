@@ -203,10 +203,17 @@ function handleAnswer(option, optionIndex) {
         AppState.q9Choice = option.optionId;
     }
     
-    // 載入下一題
-    setTimeout(() => {
-        loadQuestion(AppState.currentQuestion + 1);
-    }, 500);
+    // 執行轉場動畫後載入下一題
+    if (window.transitionToNextQuestion) {
+        window.transitionToNextQuestion().then(() => {
+            loadQuestion(AppState.currentQuestion + 1);
+        });
+    } else {
+        // 如果動畫函數不可用，直接載入下一題
+        setTimeout(() => {
+            loadQuestion(AppState.currentQuestion + 1);
+        }, 500);
+    }
 }
 
 /**
@@ -243,15 +250,18 @@ function calculateFinalResult() {
     // 如果有多個最高分，使用 Q9 決勝
     let finalTrait = topTraits[0];
     if (topTraits.length > 1 && AppState.q9Choice) {
-        const q9Trait = AppState.q9Choice.split('_')[1];
+        const q9Trait = AppState.q9Choice.split('_')[1]; // 從 'Q9_A' 格式中提取特質
         if (topTraits.includes(q9Trait)) {
             finalTrait = q9Trait;
         }
     }
     
     // 檢查是否為特殊結果（均衡型）
-    const uniqueScores = new Set(Object.values(AppState.scores));
-    if (uniqueScores.size === 1) {
+    const scoreValues = Object.values(AppState.scores);
+    const uniqueScores = new Set(scoreValues);
+    
+    // 如果所有分數都相同，或者分數差異很小，返回特殊結果
+    if (uniqueScores.size === 1 || (Math.max(...scoreValues) - Math.min(...scoreValues) < 0.5)) {
         return quizResults.SPECIAL_RESULT;
     }
     
@@ -266,6 +276,11 @@ function resetAppState() {
     AppState.answers = [];
     AppState.scores = { A: 0, B: 0, C: 0, D: 0, E: 0 };
     AppState.q9Choice = null;
+    
+    // 重置進度條
+    if (elements.questions.progressFill) {
+        elements.questions.progressFill.style.width = '0%';
+    }
 }
 
 /**

@@ -1,0 +1,371 @@
+/* ========================================
+   Result 頁面樣式
+   ======================================== */
+
+/* 背景容器 */
+.result__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: var(--z-background);
+    overflow: hidden;
+}
+
+/* 背景圖片 */
+.result__bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.5) saturate(0.9);
+    animation: slowZoomIn 20s ease-out forwards;
+}
+
+/* 主容器 */
+.result__container {
+    position: relative;
+    z-index: var(--z-normal);
+    width: 90%;
+    max-width: 900px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--spacing-3xl) 0;
+}
+
+/* 內容容器 */
+.result__content {
+    background: rgba(26, 35, 50, 0.9);
+    backdrop-filter: blur(20px);
+    border-radius: var(--border-radius-xl);
+    padding: var(--spacing-3xl);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 107, 107, 0.2);
+    margin-bottom: var(--spacing-xl);
+    opacity: 0;
+    animation: fadeInScale 1s ease-out 0.5s forwards;
+}
+
+/* ========================================
+   標題和描述
+   ======================================== */
+
+/* 主標題 */
+.result__title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent);
+    text-align: center;
+    margin-bottom: var(--spacing-sm);
+    opacity: 0;
+    animation: fadeInDown 1s ease-out 0.8s forwards;
+}
+
+/* 副標題 */
+.result__subtitle {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-light);
+    color: var(--color-neutral-light);
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+    font-style: italic;
+    opacity: 0;
+    animation: fadeInDown 1s ease-out 1s forwards;
+}
+
+/* 描述文字 */
+.result__description {
+    font-size: var(--font-size-md);
+    line-height: 1.8;
+    color: var(--color-neutral-light);
+    text-align: justify;
+    margin-bottom: var(--spacing-3xl);
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 1.2s forwards;
+}
+
+.result__description p {
+    margin-bottom: var(--spacing-md);
+}
+
+/* ========================================
+   特質圖表
+   ======================================== */
+
+.result__traits {
+    margin-bottom: var(--spacing-3xl);
+    opacity: 0;
+    animation: fadeIn 1s ease-out 1.4s forwards;
+}
+
+.result__traits-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-accent);
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+/* 特質條狀圖 */
+.traits__chart {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.trait__item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.trait__label {
+    flex: 0 0 120px;
+    font-size: var(--font-size-sm);
+    color: var(--color-neutral);
+    text-align: right;
+}
+
+.trait__bar-container {
+    flex: 1;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+.trait__bar {
+    height: 100%;
+    background: linear-gradient(90deg, 
+        var(--color-accent) 0%, 
+        var(--color-accent-light) 100%);
+    border-radius: 12px;
+    width: 0;
+    transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+}
+
+/* 特質條動畫延遲 */
+.trait__item:nth-child(1) .trait__bar { transition-delay: 0.1s; }
+.trait__item:nth-child(2) .trait__bar { transition-delay: 0.2s; }
+.trait__item:nth-child(3) .trait__bar { transition-delay: 0.3s; }
+.trait__item:nth-child(4) .trait__bar { transition-delay: 0.4s; }
+.trait__item:nth-child(5) .trait__bar { transition-delay: 0.5s; }
+
+.trait__value {
+    position: absolute;
+    right: var(--spacing-sm);
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: white;
+}
+
+/* ========================================
+   相似和互補書籍
+   ======================================== */
+
+.result__similar-books,
+.result__complementary {
+    margin-bottom: var(--spacing-2xl);
+    opacity: 0;
+}
+
+.result__similar-books {
+    animation: fadeInLeft 1s ease-out 1.6s forwards;
+}
+
+.result__complementary {
+    animation: fadeInRight 1s ease-out 1.8s forwards;
+}
+
+.books__title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-accent);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.books__title::before {
+    content: '';
+    width: 4px;
+    height: 20px;
+    background: var(--color-accent);
+    border-radius: 2px;
+}
+
+.books__list {
+    list-style: none;
+    padding-left: var(--spacing-lg);
+}
+
+.books__item {
+    font-size: var(--font-size-sm);
+    color: var(--color-neutral-light);
+    margin-bottom: var(--spacing-sm);
+    position: relative;
+    padding-left: var(--spacing-md);
+}
+
+.books__item::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+}
+
+/* ========================================
+   重新開始按鈕
+   ======================================== */
+
+.result__restart-btn {
+    margin: 0 auto;
+    display: block;
+    font-size: var(--font-size-md);
+    padding: var(--spacing-md) var(--spacing-2xl);
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 2s forwards;
+}
+
+/* ========================================
+   動畫關鍵影格
+   ======================================== */
+
+@keyframes slowZoomIn {
+    from {
+        transform: scale(1.2);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ========================================
+   響應式設計
+   ======================================== */
+
+/* 平板裝置 */
+@media screen and (max-width: 768px) {
+    .result__content {
+        padding: var(--spacing-2xl);
+    }
+    
+    .result__title {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .result__subtitle {
+        font-size: var(--font-size-md);
+    }
+    
+    .result__description {
+        font-size: var(--font-size-sm);
+        text-align: left;
+    }
+    
+    .trait__label {
+        flex: 0 0 80px;
+        font-size: var(--font-size-xs);
+    }
+}
+
+/* 手機裝置 */
+@media screen and (max-width: 480px) {
+    .result__container {
+        padding: var(--spacing-xl) 0;
+    }
+    
+    .result__content {
+        padding: var(--spacing-xl);
+        border-radius: var(--border-radius-lg);
+    }
+    
+    .result__title {
+        font-size: var(--font-size-xl);
+    }
+    
+    .result__subtitle {
+        font-size: var(--font-size-sm);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .traits__chart {
+        gap: var(--spacing-sm);
+    }
+    
+    .trait__bar-container {
+        height: 20px;
+    }
+}
