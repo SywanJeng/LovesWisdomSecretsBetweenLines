@@ -1,0 +1,312 @@
+/* ========================================
+   Questions 頁面樣式
+   ======================================== */
+
+/* 背景容器 */
+.questions__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: var(--z-background);
+    overflow: hidden;
+    transition: opacity var(--duration-slow) var(--easing-default);
+}
+
+/* 背景圖片 */
+.questions__bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.6) saturate(0.8);
+    transition: transform 1s var(--easing-default),
+                opacity 1s var(--easing-default);
+}
+
+/* 主容器 */
+.questions__container {
+    position: relative;
+    z-index: var(--z-normal);
+    width: 90%;
+    max-width: 800px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: var(--spacing-2xl) 0;
+}
+
+/* ========================================
+   進度條樣式
+   ======================================== */
+
+.questions__progress {
+    position: relative;
+    margin-bottom: var(--spacing-3xl);
+    animation: fadeInDown 0.8s ease-out;
+}
+
+/* 進度條背景 */
+.questions__progress-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* 進度條填充 */
+.questions__progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, 
+        var(--color-accent) 0%, 
+        var(--color-accent-light) 100%);
+    border-radius: 2px;
+    transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+}
+
+/* 進度文字 */
+.questions__progress-text {
+    position: absolute;
+    top: -30px;
+    right: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-neutral-light);
+    font-weight: var(--font-weight-light);
+    letter-spacing: 0.05em;
+}
+
+.questions__current {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent);
+    font-size: var(--font-size-lg);
+}
+
+/* ========================================
+   問題內容樣式
+   ======================================== */
+
+.questions__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: var(--spacing-xl) 0;
+}
+
+/* 問題標題 */
+.questions__title {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.6;
+    color: var(--color-neutral-light);
+    margin-bottom: var(--spacing-3xl);
+    max-width: 700px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    position: relative;
+    min-height: 100px; /* 防止高度跳動 */
+}
+
+/* TypeIt 打字效果游標 */
+.ti-cursor {
+    color: var(--color-accent);
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+
+/* ========================================
+   選項樣式
+   ======================================== */
+
+.questions__options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* 單個選項 */
+.option {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid transparent;
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg) var(--spacing-xl);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-light);
+    color: var(--color-neutral-light);
+    text-align: left;
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--easing-default);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: optionFadeIn 0.5s ease-out forwards;
+}
+
+/* 選項進場動畫延遲 */
+.option:nth-child(1) { animation-delay: 0.1s; }
+.option:nth-child(2) { animation-delay: 0.2s; }
+.option:nth-child(3) { animation-delay: 0.3s; }
+.option:nth-child(4) { animation-delay: 0.4s; }
+.option:nth-child(5) { animation-delay: 0.5s; }
+
+/* 選項懸停效果 */
+.option:hover {
+    background: rgba(255, 107, 107, 0.1);
+    border-color: var(--color-accent);
+    transform: translateX(10px);
+    box-shadow: 0 5px 20px rgba(255, 107, 107, 0.2);
+}
+
+/* 選項選中效果 */
+.option--selected {
+    background: rgba(255, 107, 107, 0.2);
+    border-color: var(--color-accent);
+    color: white;
+    animation: optionSelect 0.5s ease-out;
+}
+
+/* 選項內的裝飾線 */
+.option::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: var(--color-accent);
+    transform: scaleY(0);
+    transition: transform var(--duration-normal) var(--easing-default);
+}
+
+.option:hover::before,
+.option--selected::before {
+    transform: scaleY(1);
+}
+
+/* ========================================
+   動畫關鍵影格
+   ======================================== */
+
+/* 淡入向下 */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 選項淡入 */
+@keyframes optionFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 選項選中動畫 */
+@keyframes optionSelect {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* 問題轉場 - 退場 */
+.questions--exiting .questions__title {
+    animation: questionExit 0.5s ease-in forwards;
+}
+
+.questions--exiting .option {
+    animation: optionExit 0.3s ease-in forwards;
+}
+
+@keyframes questionExit {
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes optionExit {
+    to {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+}
+
+/* ========================================
+   響應式設計
+   ======================================== */
+
+/* 平板裝置 */
+@media screen and (max-width: 768px) {
+    .questions__container {
+        padding: var(--spacing-xl) 0;
+    }
+    
+    .questions__title {
+        font-size: var(--font-size-xl);
+        margin-bottom: var(--spacing-2xl);
+    }
+    
+    .questions__options {
+        gap: var(--spacing-sm);
+    }
+    
+    .option {
+        padding: var(--spacing-md) var(--spacing-lg);
+        font-size: var(--font-size-sm);
+    }
+}
+
+/* 手機裝置 */
+@media screen and (max-width: 480px) {
+    .questions__progress {
+        margin-bottom: var(--spacing-2xl);
+    }
+    
+    .questions__title {
+        font-size: var(--font-size-lg);
+        min-height: 80px;
+    }
+    
+    .questions__content {
+        padding: var(--spacing-md) 0;
+    }
+    
+    .option {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    .option:hover {
+        transform: none; /* 移動裝置上取消水平移動 */
+    }
+}
