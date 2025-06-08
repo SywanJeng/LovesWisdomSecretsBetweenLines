@@ -270,3 +270,23 @@ button {
         opacity: 0;
     }
 }
+
+/* Typing cursor animation */
+.typing-cursor {
+    display: inline-block;
+    animation: blink 0.7s infinite;
+    margin-left: 2px; /* Optional: adds a small space for the cursor */
+}
+
+/* Existing ti-cursor can also use this, or have its own */
+.ti-cursor {
+    display: inline-block;
+    animation: blink 0.7s infinite;
+    margin-left: 1px; /* Fine-tune as needed */
+}
+
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}

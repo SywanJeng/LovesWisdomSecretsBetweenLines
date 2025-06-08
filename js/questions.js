@@ -5,90 +5,12 @@
  */
 
 import { quizQuestions } from './data/quizContent.js';
-import { createButtonExplosion } from './utils/animations.js';
+import { createButtonExplosion, typeText } from './utils/animations.js';
 
 // 儲存元素引用和狀態
 let elements = {};
 let currentTyping = null;
 let isAnimating = false; // 用於防止在轉場動畫期間重複操作
-
-/**
- * 簡單的打字效果實現
- * （如果不使用 TypeIt.js 的替代方案）
- */
-class SimpleTypewriter {
-    constructor(element, text, options = {}) {
-        this.element = element;
-        this.text = text;
-        this.options = {
-            speed: 50,
-            cursor: true,
-            ...options
-        };
-        this.currentIndex = 0;
-        this.isTyping = false;
-        this.cursorElement = null;
-    }
-
-    start() {
-        return new Promise(resolve => {
-            this.isTyping = true;
-            this.element.textContent = '';
-
-            // 添加游標
-            if (this.options.cursor) {
-                this.cursorElement = document.createElement('span');
-                this.cursorElement.className = 'ti-cursor';
-                this.cursorElement.textContent = '|';
-                this.element.appendChild(this.cursorElement);
-            }
-
-            this.onComplete = resolve;
-            this.type();
-        });
-    }
-
-    type() {
-        if (!this.isTyping || this.currentIndex >= this.text.length) {
-            this.isTyping = false;
-            // 移除游標
-            if (this.cursorElement) {
-                setTimeout(() => {
-                    if (this.cursorElement) this.cursorElement.remove();
-                    this.cursorElement = null;
-                }, 500);
-            }
-            if (this.onComplete) this.onComplete();
-            return;
-        }
-
-        // 插入下一個字符
-        const char = this.text.charAt(this.currentIndex);
-        const textNode = document.createTextNode(char);
-
-        if (this.cursorElement) {
-            this.element.insertBefore(textNode, this.cursorElement);
-        } else {
-            this.element.appendChild(textNode);
-        }
-
-        this.currentIndex++;
-
-        // 計算下一個字符的延遲（標點符號延遲更長）
-        const delay = /[，。？！]/.test(char) ? this.options.speed * 3 : this.options.speed;
-
-        setTimeout(() => this.type(), delay);
-    }
-
-    stop() {
-        this.isTyping = false;
-        if (this.cursorElement) {
-            this.cursorElement.remove();
-            this.cursorElement = null;
-        }
-        this.element.textContent = this.text;
-    }
-}
 
 /**
  * 載入並顯示問題
@@ -112,10 +34,10 @@ async function loadQuestionWithAnimation(question, onOptionClick) {
     elements.options.style.opacity = '1';
 
     // 使用打字效果顯示問題
-    currentTyping = new SimpleTypewriter(
+    currentTyping = typeText(
         elements.title,
         question.questionText,
-        { speed: 40, cursor: true }
+        { speed: 40, cursor: true, cursorClassName: 'ti-cursor' } // Use existing cursor class if styled
     );
 
     await currentTyping.start();
@@ -182,13 +104,6 @@ function createOptionElement(option, index) {
 }
 
 /**
- * 執行問題轉場動畫 (不再需要手動觸發)
- */
-function transitionToNextQuestion() {
-    return Promise.resolve();
-}
-
-/**
  * 更新背景圖片（帶過渡效果）
  * @param {string} imageSrc - 圖片路徑
  */
@@ -216,21 +131,27 @@ export async function initQuestions(domElements) {
     elements = domElements;
 
     // 設定全域函數供 main.js 調用
-    window.loadQuestionWithAnimation = loadQuestionWithAnimation;
-    window.transitionToNextQuestion = transitionToNextQuestion;
-    window.updateQuestionBackground = updateBackgroundImage;
+    // window.loadQuestionWithAnimation = loadQuestionWithAnimation;
+    // window.transitionToNextQuestion = transitionToNextQuestion;
+    // window.updateQuestionBackground = updateBackgroundImage;
+    return {
+        loadQuestionWithAnimation,
+        // transitionToNextQuestion, // Removed
+        updateQuestionBackground: updateBackgroundImage
+    };
 }
 
 /**
  * 清理 Questions 頁面
  */
 export function cleanupQuestions() {
-    if (currentTyping) {
+    if (currentTyping && typeof currentTyping.stop === 'function') {
         currentTyping.stop();
+        currentTyping = null; // Clear reference
     }
 
     // 清除全域函數
-    delete window.loadQuestionWithAnimation;
-    delete window.transitionToNextQuestion;
-    delete window.updateQuestionBackground;
+    // delete window.loadQuestionWithAnimation; // No longer needed
+    // delete window.transitionToNextQuestion; // No longer needed
+    // delete window.updateQuestionBackground; // No longer needed
 }

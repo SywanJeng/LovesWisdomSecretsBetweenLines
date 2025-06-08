@@ -185,25 +185,92 @@ export function pulse(element, scale = 1.05, duration = 1000) {
  * 文字逐字顯示
  * @param {HTMLElement} element - 目標元素
  * @param {string} text - 要顯示的文字
- * @param {number} delay - 每個字的延遲（毫秒）
- * @returns {Promise} 動畫完成的 Promise
+ * @param {Object} options - 選項
+ * @param {number} options.speed - 每個字的延遲（毫秒），預設 50
+ * @param {boolean} options.cursor - 是否顯示游標，預設 true
+ * @param {string} options.cursorChar - 游標字符，預設 '|'
+ * @param {string} options.cursorClassName - 游標 CSS class，預設 'typing-cursor'
+ * @returns {Object} 包含 start 和 stop 方法的控制器
  */
-export function typeText(element, text, delay = 50) {
-    return new Promise(resolve => {
-        element.textContent = '';
-        const chars = text.split('');
-        let index = 0;
-        
-        const timer = setInterval(() => {
-            if (index < chars.length) {
-                element.textContent += chars[index];
-                index++;
+export function typeText(element, text, options = {}) {
+    const defaults = {
+        speed: 50,
+        cursor: true,
+        cursorChar: '|',
+        cursorClassName: 'typing-cursor',
+    };
+    const settings = { ...defaults, ...options };
+
+    let timerId = null;
+    let charIndex = 0;
+    let cursorElement = null;
+    let animationPromise = null;
+    let resolvePromise = null;
+
+    function typeCharacter() {
+        if (charIndex < text.length) {
+            const char = text.charAt(charIndex);
+            // Insert char before cursor if cursor exists
+            if (cursorElement) {
+                element.insertBefore(document.createTextNode(char), cursorElement);
             } else {
-                clearInterval(timer);
-                resolve();
+                element.appendChild(document.createTextNode(char));
             }
-        }, delay);
-    });
+            charIndex++;
+            // Speed up for punctuation
+            const delay = /[，。？！]/.test(char) ? settings.speed * 3 : settings.speed;
+            timerId = setTimeout(typeCharacter, delay);
+        } else {
+            if (cursorElement) {
+                // Keep cursor blinking for a bit, then remove
+                setTimeout(() => {
+                    if (cursorElement) cursorElement.remove();
+                    cursorElement = null;
+                    if (resolvePromise) resolvePromise();
+                }, 500);
+            } else {
+                 if (resolvePromise) resolvePromise();
+            }
+        }
+    }
+
+    function start() {
+        animationPromise = new Promise(resolve => {
+            resolvePromise = resolve;
+            element.textContent = ''; // Clear previous content
+            charIndex = 0;
+
+            if (settings.cursor) {
+                cursorElement = document.createElement('span');
+                cursorElement.className = settings.cursorClassName;
+                cursorElement.textContent = settings.cursorChar;
+                element.appendChild(cursorElement);
+            }
+            typeCharacter();
+        });
+        return animationPromise;
+    }
+
+    function stop() {
+        if (timerId) {
+            clearTimeout(timerId);
+            timerId = null;
+        }
+        element.textContent = text; // Display full text
+        if (cursorElement) {
+            cursorElement.remove();
+            cursorElement = null;
+        }
+        if (resolvePromise) {
+            // Resolve if not already resolved, indicating completion (or interruption)
+            resolvePromise();
+        }
+    }
+
+    return {
+        start,
+        stop,
+    };
 }
 
 /**
@@ -213,7 +280,7 @@ export function typeText(element, text, delay = 50) {
  */
 export function createButtonExplosion(button) {
     return new Promise(resolve => {
-        const originalText = button.textContent || button.innerText;
+        const originalText = button.textContent;
         const characters = originalText.split('');
         
         // 1. 為了測量，將每個字元用 span 包起來

@@ -6,6 +6,7 @@
 
 import { loadSVG } from './utils/svgLoader.js';
 import { runPreloadAnimation } from './animations/preloadAnimation.js';
+import { SVG_LOGO_PATH } from './constants.js';
 
 // 需要預載入的資源清單
 const RESOURCES = {
@@ -98,7 +99,7 @@ export async function initPreload(elements, onComplete) {
         }
         
         const svg = await loadSVG(
-            'assets/svg/logo-amour-oracle.svg',
+            SVG_LOGO_PATH,
             logoWrapper,
             {
                 className: 'preload__logo',
@@ -150,7 +151,7 @@ if (window.location.hostname === 'localhost') {
     document.addEventListener('keydown', (e) => {
         // 按下 S 鍵跳過預載入
         if (e.key === 's' || e.key === 'S') {
-            console.log('Skipping preload...');
+            // console.log('Skipping preload...'); // Removed for cleanup
             skipPreload();
         }
     });

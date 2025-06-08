@@ -6,6 +6,7 @@
 
 import { loadSVG } from './utils/svgLoader.js';
 import { createButtonExplosion } from './utils/animations.js';
+import { SVG_LOGO_PATH } from './constants.js';
 
 // 儲存元素引用
 let elements = {};
@@ -18,7 +19,7 @@ let isAnimating = false;
 async function loadIntroTitle(titleContainer) {
     try {
         const svg = await loadSVG(
-            'assets/svg/logo-amour-oracle.svg',
+            SVG_LOGO_PATH,
             titleContainer,
             {
                 className: 'intro__title-logo',
@@ -106,14 +107,16 @@ export async function initIntro(domElements, onStartClick) {
     });
 
     // 設定頁面進入函數
-    window.introPageEnter = () => {
-        // 重置按鈕狀態
-        isAnimating = false;
-        elements.startBtn.disabled = false;
-        elements.startBtn.classList.remove('is-exploding');
-        elements.startBtn.style.pointerEvents = 'auto';
-        elements.intro.classList.remove('intro--exiting');
-        elements.intro.style.opacity = '1'; // 確保再次進入時可見
+    return {
+        pageEnter: () => {
+            // 重置按鈕狀態
+            isAnimating = false;
+            elements.startBtn.disabled = false;
+            elements.startBtn.classList.remove('is-exploding');
+            elements.startBtn.style.pointerEvents = 'auto';
+            elements.intro.classList.remove('intro--exiting');
+            elements.intro.style.opacity = '1'; // 確保再次進入時可見
+        }
     };
 }
 
@@ -129,5 +132,5 @@ export function cleanupIntro() {
     }
 
     // 清除全域函數
-    delete window.introPageEnter;
+    // delete window.introPageEnter; // No longer needed
 }
