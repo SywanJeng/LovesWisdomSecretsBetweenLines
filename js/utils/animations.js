@@ -207,6 +207,60 @@ export function typeText(element, text, delay = 50) {
 }
 
 /**
+ * 按鈕文字噴濺效果（全新強化版）
+ * @param {HTMLElement} button - 目標按鈕元素
+ * @returns {Promise} 動畫完成的 Promise
+ */
+export function createButtonExplosion(button) {
+    return new Promise(resolve => {
+        const text = button.textContent || button.innerText;
+        const buttonRect = button.getBoundingClientRect();
+        
+        // 創建一個專用的粒子容器
+        const particlesContainer = document.createElement('div');
+        particlesContainer.className = 'particles-container';
+        document.body.appendChild(particlesContainer);
+
+        // 隱藏按鈕原始文字並觸發按鈕本身的消失動畫
+        button.style.color = 'transparent';
+        button.classList.add('is-exploding');
+
+        const characters = text.split('');
+        
+        characters.forEach((char) => {
+            if (char.trim() === '') return; // 忽略空白字符
+
+            const particle = document.createElement('span');
+            particle.className = 'particle';
+            particle.textContent = char;
+            
+            // 初始位置設定在按鈕中心
+            particle.style.left = `${buttonRect.left + buttonRect.width / 2}px`;
+            particle.style.top = `${buttonRect.top + buttonRect.height / 2}px`;
+            
+            // 計算一個更遠、更廣的隨機爆炸方向和距離
+            const angle = Math.random() * Math.PI * 2;
+            const distance = Math.random() * (window.innerWidth / 2.5) + (window.innerWidth / 5);
+            const deltaX = Math.cos(angle) * distance;
+            const deltaY = Math.sin(angle) * distance;
+            const rotation = Math.random() * 720 - 360;
+            
+            particle.style.setProperty('--particle-x', `${deltaX}px`);
+            particle.style.setProperty('--particle-y', `${deltaY}px`);
+            particle.style.setProperty('--particle-rotate', `${rotation}deg`);
+            
+            particlesContainer.appendChild(particle);
+        });
+        
+        // 動畫結束後清理粒子容器
+        setTimeout(() => {
+            particlesContainer.remove();
+            resolve();
+        }, 1500);
+    });
+}
+
+/**
  * 並行執行多個動畫
  * @param {...Function} animations - 動畫函數列表
  * @returns {Promise} 所有動畫完成的 Promise
