@@ -207,56 +207,77 @@ export function typeText(element, text, delay = 50) {
 }
 
 /**
- * 按鈕文字噴濺效果（全新強化版）
+ * 按鈕文字噴濺效果（全新強化版 - V3 - 原地爆炸）
  * @param {HTMLElement} button - 目標按鈕元素
  * @returns {Promise} 動畫完成的 Promise
  */
 export function createButtonExplosion(button) {
     return new Promise(resolve => {
-        const text = button.textContent || button.innerText;
-        const buttonRect = button.getBoundingClientRect();
+        const originalText = button.textContent || button.innerText;
+        const characters = originalText.split('');
         
-        // 創建一個專用的粒子容器
-        const particlesContainer = document.createElement('div');
-        particlesContainer.className = 'particles-container';
-        document.body.appendChild(particlesContainer);
+        // 1. 為了測量，將每個字元用 span 包起來
+        button.innerHTML = characters.map(char =>
+            // 使用相對定位，以便 getBoundingClientRect 能夠準確工作
+            `<span class="exploding-char" style="display: inline-block;">${char}</span>`
+        ).join('');
 
-        // 隱藏按鈕原始文字並觸發按鈕本身的消失動畫
-        button.style.color = 'transparent';
-        button.classList.add('is-exploding');
+        // 2. 確保瀏覽器已渲染新的 span，然後獲取它們的位置
+        requestAnimationFrame(() => {
+            const charSpans = button.querySelectorAll('.exploding-char');
+            const positions = Array.from(charSpans).map(span => span.getBoundingClientRect());
 
-        const characters = text.split('');
-        
-        characters.forEach((char) => {
-            if (char.trim() === '') return; // 忽略空白字符
+            // 3. 隱藏原始按鈕的文字（現在是 span），並觸發按鈕背景的淡出
+            button.style.color = 'transparent';
+            button.style.textShadow = 'none';
+            button.classList.add('is-exploding');
 
-            const particle = document.createElement('span');
-            particle.className = 'particle';
-            particle.textContent = char;
-            
-            // 初始位置設定在按鈕中心
-            particle.style.left = `${buttonRect.left + buttonRect.width / 2}px`;
-            particle.style.top = `${buttonRect.top + buttonRect.height / 2}px`;
-            
-            // 計算一個更遠、更廣的隨機爆炸方向和距離
-            const angle = Math.random() * Math.PI * 2;
-            const distance = Math.random() * (window.innerWidth / 2.5) + (window.innerWidth / 5);
-            const deltaX = Math.cos(angle) * distance;
-            const deltaY = Math.sin(angle) * distance;
-            const rotation = Math.random() * 720 - 360;
-            
-            particle.style.setProperty('--particle-x', `${deltaX}px`);
-            particle.style.setProperty('--particle-y', `${deltaY}px`);
-            particle.style.setProperty('--particle-rotate', `${rotation}deg`);
-            
-            particlesContainer.appendChild(particle);
+            // 4. 根據測量好的位置，創建粒子
+            const particlesContainer = document.createElement('div');
+            particlesContainer.className = 'particles-container';
+            document.body.appendChild(particlesContainer);
+
+            characters.forEach((char, index) => {
+                if (char.trim() === '') return;
+
+                const pos = positions[index];
+                if (!pos) return;
+
+                const particle = document.createElement('span');
+                particle.className = 'particle';
+                particle.textContent = char;
+
+                // 將粒子的初始位置設定為對應字元的精確位置
+                particle.style.left = `${pos.left}px`;
+                particle.style.top = `${pos.top}px`;
+                
+                // 計算隨機的爆炸方向和距離
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * (window.innerWidth / 3) + (window.innerWidth / 6);
+                const deltaX = Math.cos(angle) * distance;
+                const deltaY = Math.sin(angle) * distance;
+                const rotation = Math.random() * 720 - 360;
+                
+                // 將這些值傳遞給 CSS 動畫
+                particle.style.setProperty('--particle-x', `${deltaX}px`);
+                particle.style.setProperty('--particle-y', `${deltaY}px`);
+                particle.style.setProperty('--particle-rotate', `${rotation}deg`);
+
+                particlesContainer.appendChild(particle);
+            });
+
+            // 5. 動畫結束後進行清理
+            setTimeout(() => {
+                particlesContainer.remove();
+                // 為了讓按鈕可以重用（例如重新測驗），我們恢復它的原始狀態
+                if (button) {
+                    button.innerHTML = originalText;
+                    button.style.color = '';
+                    button.style.textShadow = '';
+                }
+                resolve();
+            }, 1500); // 動畫時長為 1.5s
         });
-        
-        // 動畫結束後清理粒子容器
-        setTimeout(() => {
-            particlesContainer.remove();
-            resolve();
-        }, 1500);
     });
 }
 
