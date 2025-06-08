@@ -64,13 +64,14 @@ function handleStartClick(onComplete) {
         elements.intro.classList.add('intro--exiting');
 
         // 動畫結束後觸發頁面切換
-        const onTransitionEnd = () => {
-            elements.intro.removeEventListener('transitionend', onTransitionEnd);
+        // 【修正】將 'transitionend' 改為 'animationend'
+        const onAnimationEnd = () => {
+            elements.intro.removeEventListener('animationend', onAnimationEnd);
             if (onComplete) {
                 onComplete();
             }
         };
-        elements.intro.addEventListener('transitionend', onTransitionEnd);
+        elements.intro.addEventListener('animationend', onAnimationEnd);
 
     } catch (error) {
         console.error('Intro start process failed:', error);
