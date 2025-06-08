@@ -294,7 +294,7 @@ async function init() {
     initializeElements();
     
     // 初始化各個模組
-    await initPreload(elements.preload, () => switchPage('intro', 1000));
+    await initPreload(elements.preload, () => switchPage('intro', 300));
     await initIntro(elements.intro, () => switchPage('questions'));
     await initQuestions(elements.questions);
     await initResult(elements.result, () => {

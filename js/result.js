@@ -105,7 +105,7 @@ function createTraitBar(trait, value) {
     const bar = document.createElement('div');
     bar.className = 'trait__bar';
     bar.setAttribute('data-value', value);
-    bar.style.width = '0%'; // 初始寬度為0，等待動畫
+    // 初始狀態現在由 CSS (transform: scaleX(0)) 控制
     
     const valueText = document.createElement('span');
     valueText.className = 'trait__value';
@@ -128,10 +128,11 @@ function animateTraitBars() {
     bars.forEach(bar => {
         const value = parseFloat(bar.getAttribute('data-value'));
         const maxValue = 5; // 最大值為5
-        const percentage = (value / maxValue) * 100;
+        const scale = value / maxValue; // 計算縮放比例 (0 到 1)
         
         requestAnimationFrame(() => {
-            bar.style.width = `${percentage}%`;
+            // 修改：使用 transform scaleX 進行動畫
+            bar.style.transform = `scaleX(${scale})`;
         });
     });
 }

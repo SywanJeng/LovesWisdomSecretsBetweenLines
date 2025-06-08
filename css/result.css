@@ -144,8 +144,9 @@
         var(--color-accent) 0%, 
         var(--color-accent-light) 100%);
     border-radius: 12px;
-    width: 0;
-    transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: left; /* 新增：設定變形原點 */
+    transform: scaleX(0); /* 修改：使用 transform 取代 width */
+    transition: transform 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); /* 修改：動畫目標為 transform */
     box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
 }
 
