@@ -10,7 +10,7 @@ import { createButtonExplosion } from './utils/animations.js';
 // 儲存元素引用和狀態
 let elements = {};
 let currentTyping = null;
-let isTransitioning = false;
+let isAnimating = false; // 用於防止在轉場動畫期間重複操作
 
 /**
  * 簡單的打字效果實現
@@ -31,20 +31,20 @@ class SimpleTypewriter {
     }
     
     start() {
-        this.isTyping = true;
-        this.element.textContent = '';
-        
-        // 添加游標
-        if (this.options.cursor) {
-            this.cursorElement = document.createElement('span');
-            this.cursorElement.className = 'ti-cursor';
-            this.cursorElement.textContent = '|';
-            this.element.appendChild(this.cursorElement);
-        }
-        
-        this.type();
         return new Promise(resolve => {
+            this.isTyping = true;
+            this.element.textContent = '';
+            
+            // 添加游標
+            if (this.options.cursor) {
+                this.cursorElement = document.createElement('span');
+                this.cursorElement.className = 'ti-cursor';
+                this.cursorElement.textContent = '|';
+                this.element.appendChild(this.cursorElement);
+            }
+            
             this.onComplete = resolve;
+            this.type();
         });
     }
     
@@ -54,7 +54,8 @@ class SimpleTypewriter {
             // 移除游標
             if (this.cursorElement) {
                 setTimeout(() => {
-                    this.cursorElement.remove();
+                    if (this.cursorElement) this.cursorElement.remove();
+                    this.cursorElement = null;
                 }, 500);
             }
             if (this.onComplete) this.onComplete();
@@ -81,10 +82,11 @@ class SimpleTypewriter {
     
     stop() {
         this.isTyping = false;
-        this.element.textContent = this.text;
         if (this.cursorElement) {
             this.cursorElement.remove();
+            this.cursorElement = null;
         }
+        this.element.textContent = this.text;
     }
 }
 
@@ -94,12 +96,12 @@ class SimpleTypewriter {
  * @param {Function} onOptionClick - 選項點擊回調
  */
 async function loadQuestionWithAnimation(question, onOptionClick) {
-    if (isTransitioning) return;
-    isTransitioning = true;
+    isAnimating = true;
     
     // 清除之前的打字效果
     if (currentTyping) {
         currentTyping.stop();
+        currentTyping = null;
     }
     
     // 清空選項
@@ -122,29 +124,29 @@ async function loadQuestionWithAnimation(question, onOptionClick) {
         const optionElement = createOptionElement(option, index);
         
         optionElement.addEventListener('click', () => {
-            if (isTransitioning) return;
-            isTransitioning = true; // 防止在動畫期間重複點擊
-            
-            // 觸發噴濺動畫
-            createButtonExplosion(optionElement);
-            
-            // 禁用其他選項的指針事件
+            // 防止重複點擊
+            if (isAnimating) return;
+            isAnimating = true;
+
+            // 禁用所有選項的點擊事件，避免在動畫期間誤觸
             const allOptions = elements.options.querySelectorAll('.option');
             allOptions.forEach(opt => {
                 opt.style.pointerEvents = 'none';
             });
             
+            // 觸發噴濺動畫
+            createButtonExplosion(optionElement);
+            
             // 觸發回調
             setTimeout(() => {
                 onOptionClick(option, index);
-                // isTransitioning 會在下一題載入時重置
             }, 500); // 延遲以等待動畫開始
         });
         
         elements.options.appendChild(optionElement);
     });
     
-    isTransitioning = false;
+    isAnimating = false;
 }
 
 /**
