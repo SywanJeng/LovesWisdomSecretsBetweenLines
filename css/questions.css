@@ -165,19 +165,22 @@
 .option:nth-child(5) { animation-delay: 0.5s; }
 
 /* 選項懸停效果 */
-.option:hover {
+.option:not(.is-exploding):hover {
     background: rgba(255, 107, 107, 0.1);
     border-color: var(--color-accent);
     transform: translateX(10px);
     box-shadow: 0 5px 20px rgba(255, 107, 107, 0.2);
 }
 
-/* 選項選中效果 */
-.option--selected {
+/* 選項選中效果 - 現在由噴濺動畫取代 */
+.option.is-exploding {
+    transform: scale(1.05);
     background: rgba(255, 107, 107, 0.2);
     border-color: var(--color-accent);
-    color: white;
-    animation: optionSelect 0.5s ease-out;
+    opacity: 0;
+    transition: transform 0.4s var(--easing-default), 
+                opacity 0.4s var(--easing-default),
+                background 0.4s var(--easing-default);
 }
 
 /* 選項內的裝飾線 */
@@ -193,8 +196,7 @@
     transition: transform var(--duration-normal) var(--easing-default);
 }
 
-.option:hover::before,
-.option--selected::before {
+.option:not(.is-exploding):hover::before {
     transform: scaleY(1);
 }
 
@@ -223,19 +225,6 @@
     to {
         opacity: 1;
         transform: translateY(0);
-    }
-}
-
-/* 選項選中動畫 */
-@keyframes optionSelect {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
-    100% {
-        transform: scale(1);
     }
 }
 
