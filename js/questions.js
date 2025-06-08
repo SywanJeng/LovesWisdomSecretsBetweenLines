@@ -5,6 +5,7 @@
  */
 
 import { quizQuestions } from './data/quizContent.js';
+import { createButtonExplosion } from './utils/animations.js';
 
 // 儲存元素引用和狀態
 let elements = {};
@@ -122,11 +123,12 @@ async function loadQuestionWithAnimation(question, onOptionClick) {
         
         optionElement.addEventListener('click', () => {
             if (isTransitioning) return;
+            isTransitioning = true; // 防止在動畫期間重複點擊
             
-            // 標記選中狀態
-            optionElement.classList.add('option--selected');
+            // 觸發噴濺動畫
+            createButtonExplosion(optionElement);
             
-            // 禁用其他選項
+            // 禁用其他選項的指針事件
             const allOptions = elements.options.querySelectorAll('.option');
             allOptions.forEach(opt => {
                 opt.style.pointerEvents = 'none';
@@ -135,7 +137,8 @@ async function loadQuestionWithAnimation(question, onOptionClick) {
             // 觸發回調
             setTimeout(() => {
                 onOptionClick(option, index);
-            }, 500);
+                // isTransitioning 會在下一題載入時重置
+            }, 500); // 延遲以等待動畫開始
         });
         
         elements.options.appendChild(optionElement);
