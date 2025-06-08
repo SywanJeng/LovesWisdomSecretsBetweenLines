@@ -6,6 +6,7 @@
 
 import { loadSVG } from './utils/svgLoader.js';
 import { runIntroExitSequence } from './animations/introAnimation.js';
+import { createButtonExplosion } from './utils/animations.js';
 
 // 儲存元素引用
 let elements = {};
@@ -55,12 +56,13 @@ async function handleStartClick(onComplete) {
         // 禁用按鈕避免重複點擊
         elements.startBtn.disabled = true;
         
-        // 執行退場動畫序列
-        await runIntroExitSequence({
-            button: elements.startBtn,
-            particlesContainer: elements.particles,
-            introSection: elements.intro
-        });
+        // 並行執行按鈕爆炸和頁面退場
+        await Promise.all([
+            createButtonExplosion(elements.startBtn),
+            runIntroExitSequence({
+                introSection: elements.intro
+            })
+        ]);
         
         // 觸發完成回調
         if (onComplete) {
@@ -74,6 +76,10 @@ async function handleStartClick(onComplete) {
         }
     } finally {
         isAnimating = false;
+        // 恢復按鈕狀態以備重新開始
+        elements.startBtn.disabled = false;
+        elements.startBtn.classList.remove('is-exploding');
+        elements.startBtn.style.color = '';
     }
 }
 
@@ -87,8 +93,7 @@ export async function initIntro(domElements, onStartClick) {
     elements = {
         intro: document.getElementById('intro'),
         title: domElements.title,
-        startBtn: domElements.startBtn,
-        particles: document.querySelector('.intro__particles')
+        startBtn: domElements.startBtn
     };
     
     // 載入 SVG 標題
@@ -103,15 +108,10 @@ export async function initIntro(domElements, onStartClick) {
     window.introPageEnter = () => {
         // 重置按鈕狀態
         elements.startBtn.disabled = false;
+        elements.startBtn.classList.remove('is-exploding');
+        elements.startBtn.style.color = 'white';
+        elements.startBtn.style.opacity = '1';
         elements.startBtn.style.transform = '';
-        elements.startBtn.style.filter = '';
-        elements.startBtn.style.opacity = '';
-        
-        // 重置按鈕文字
-        const buttonText = elements.startBtn.querySelector('.intro__start-text');
-        if (buttonText) {
-            buttonText.style.opacity = '1';
-        }
     };
 }
 
