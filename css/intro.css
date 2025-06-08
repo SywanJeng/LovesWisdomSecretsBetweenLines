@@ -115,7 +115,7 @@
     box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
 }
 
-/* 按鈕觸發爆炸時的樣式 (修改) */
+/* 按鈕觸發爆炸時的樣式 */
 .intro__start-btn.is-exploding {
     opacity: 0;
     transition: opacity 0.5s var(--easing-in);
@@ -141,7 +141,7 @@
     z-index: var(--z-overlay);
 }
 
-/* 單個粒子 (修改) */
+/* 單個粒子 */
 .particle {
     position: absolute;
     font-size: var(--font-size-lg);
@@ -199,15 +199,16 @@
     }
 }
 
-/* 粒子爆炸動畫 (更新) */
+/* 粒子爆炸動畫 */
 @keyframes particleExplosion {
     0% {
         transform: translate(0, 0) scale(1) rotate(0deg);
         opacity: 1;
     }
-    20% {
-        transform: scale(2); /* 放大到 200% */
-        opacity: 0.8;
+    /* 加快初始放大階段，並減小幅度 */
+    5% {
+        transform: scale(1.2);
+        opacity: 1;
     }
     100% {
         transform: translate(var(--particle-x), var(--particle-y)) scale(0.3) rotate(var(--particle-rotate));
@@ -218,7 +219,7 @@
 
 /* 頁面退場動畫 */
 .intro--exiting {
-    animation: pageExit 0.3s ease-in forwards; /* 更短的動畫時間 */
+    animation: pageExit 0.3s ease-in forwards;
 }
 
 @keyframes pageExit {
@@ -228,7 +229,7 @@
     }
     100% {
         opacity: 0;
-        transform: scale(0.98); /* 稍微縮小 */
+        transform: scale(0.98);
     }
 }
 
