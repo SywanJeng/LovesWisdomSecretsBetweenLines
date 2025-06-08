@@ -174,15 +174,10 @@
     box-shadow: 0 5px 20px rgba(255, 107, 107, 0.2);
 }
 
-/* 選項選中效果 - 現在由噴濺動畫取代 */
+/* 選項選中效果 - 現在由噴濺動畫取代 (修改) */
 .option.is-exploding {
-    transform: scale(1.05);
-    background: rgba(255, 107, 107, 0.2);
-    border-color: var(--color-accent);
     opacity: 0;
-    transition: transform 0.4s var(--easing-default), 
-                opacity 0.4s var(--easing-default),
-                background 0.4s var(--easing-default);
+    transition: opacity 0.4s var(--easing-default);
 }
 
 /* 選項內的裝飾線 */

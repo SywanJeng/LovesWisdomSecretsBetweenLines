@@ -115,11 +115,10 @@
     box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
 }
 
-/* 按鈕觸發爆炸時的樣式 */
+/* 按鈕觸發爆炸時的樣式 (修改) */
 .intro__start-btn.is-exploding {
-    transform: scale(0.95);
     opacity: 0;
-    transition: transform 0.5s var(--easing-in), opacity 0.5s var(--easing-in);
+    transition: opacity 0.5s var(--easing-in);
 }
 
 
@@ -142,14 +141,14 @@
     z-index: var(--z-overlay);
 }
 
-/* 單個粒子 */
+/* 單個粒子 (修改) */
 .particle {
     position: absolute;
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
-    color: var(--color-accent);
+    color: var(--color-neutral-light); /* 改為白色系 */
     animation: particleExplosion 1.5s cubic-bezier(0.1, 0.5, 0.1, 1) forwards;
-    text-shadow: 0 0 10px var(--color-accent);
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.7); /* 改為白色光暈 */
 }
 
 /* ========================================
