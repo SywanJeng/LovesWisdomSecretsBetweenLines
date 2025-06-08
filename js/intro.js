@@ -56,30 +56,24 @@ async function handleStartClick(onComplete) {
         // 禁用按鈕避免重複點擊
         elements.startBtn.disabled = true;
         
-        // 並行執行按鈕爆炸和頁面退場
-        await Promise.all([
-            createButtonExplosion(elements.startBtn),
-            runIntroExitSequence({
-                introSection: elements.intro
-            })
-        ]);
+        // 只執行按鈕爆炸效果
+        await createButtonExplosion(elements.startBtn);
         
-        // 觸發完成回調
-        if (onComplete) {
-            onComplete();
-        }
+        // 動畫開始後，稍微延遲一點再觸發頁面切換，讓效果更自然
+        setTimeout(() => {
+            if (onComplete) {
+                onComplete();
+            }
+        }, 200); // 延遲 200ms
+
     } catch (error) {
-        console.error('Intro exit animation failed:', error);
+        console.error('Intro start process failed:', error);
         // 即使動畫失敗也要繼續
         if (onComplete) {
             onComplete();
         }
     } finally {
-        isAnimating = false;
-        // 恢復按鈕狀態以備重新開始
-        elements.startBtn.disabled = false;
-        elements.startBtn.classList.remove('is-exploding');
-        elements.startBtn.style.color = '';
+        // isAnimating 和按鈕狀態會在頁面切換後由流程控制
     }
 }
 
@@ -107,9 +101,16 @@ export async function initIntro(domElements, onStartClick) {
     // 設定頁面進入函數
     window.introPageEnter = () => {
         // 重置按鈕狀態
+        isAnimating = false;
         elements.startBtn.disabled = false;
         elements.startBtn.classList.remove('is-exploding');
-        elements.startBtn.style.color = 'white';
+        // 確保按鈕文字可見
+        const startText = elements.startBtn.querySelector('.intro__start-text');
+        if(startText) {
+             startText.style.color = 'white';
+        } else {
+             elements.startBtn.style.color = 'white';
+        }
         elements.startBtn.style.opacity = '1';
         elements.startBtn.style.transform = '';
     };
@@ -121,7 +122,10 @@ export async function initIntro(domElements, onStartClick) {
 export function cleanupIntro() {
     // 移除事件監聽器
     if (elements.startBtn) {
-        elements.startBtn.removeEventListener('click', handleStartClick);
+        // 複製並替換節點以清除所有監聽器
+        const newBtn = elements.startBtn.cloneNode(true);
+        elements.startBtn.parentNode.replaceChild(newBtn, elements.startBtn);
+        elements.startBtn = newBtn;
     }
     
     // 清除全域函數
