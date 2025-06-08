@@ -77,6 +77,9 @@ function initializeElements() {
         title: document.querySelector('.result__title'),
         subtitle: document.querySelector('.result__subtitle'),
         description: document.querySelector('.result__description'),
+        traits: document.querySelector('.result__traits'),
+        similarBooks: document.querySelector('.result__similar-books'),
+        complementary: document.querySelector('.result__complementary'),
         restartBtn: document.querySelector('.result__restart-btn')
     };
 }
