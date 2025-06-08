@@ -36,6 +36,8 @@
     flex-direction: column;
     justify-content: space-between;
     padding: var(--spacing-2xl) 0;
+    /* 新增：為退場動畫準備過渡效果 */
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out, filter 0.3s ease-out;
 }
 
 /* ========================================
@@ -228,28 +230,14 @@
     }
 }
 
-/* 問題轉場 - 退場 */
-.questions--exiting .questions__title {
-    animation: questionExit 0.5s ease-in forwards;
+/* 問題轉場 - 退場 (統一由 .questions__container 的過渡效果處理) */
+.questions--exiting .questions__container {
+    opacity: 0;
+    transform: scale(0.95);
+    filter: blur(5px);
+    pointer-events: none; /* 防止在退場動畫期間進行互動 */
 }
 
-.questions--exiting .option {
-    animation: optionExit 0.3s ease-in forwards;
-}
-
-@keyframes questionExit {
-    to {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-}
-
-@keyframes optionExit {
-    to {
-        opacity: 0;
-        transform: translateX(-20px);
-    }
-}
 
 /* ========================================
    響應式設計
