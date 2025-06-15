@@ -112,6 +112,10 @@
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     position: relative;
     min-height: 100px; /* 防止高度跳動 */
+
+    /* Added properties for robust text wrapping */
+    white-space: normal;
+    overflow-wrap: break-word;
 }
 
 /* TypeIt 打字效果游標 */
