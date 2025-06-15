@@ -205,13 +205,8 @@
         transform: translate(0, 0) scale(1) rotate(0deg);
         opacity: 1;
     }
-    /* 加快初始放大階段，並減小幅度 */
-    5% {
-        transform: scale(1.2);
-        opacity: 1;
-    }
     100% {
-        transform: translate(var(--particle-x), var(--particle-y)) scale(0.3) rotate(var(--particle-rotate));
+        transform: translate(var(--particle-x), var(--particle-y)) scale(2.0) rotate(var(--particle-rotate));
         opacity: 0;
     }
 }
