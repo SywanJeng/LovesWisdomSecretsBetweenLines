@@ -11,6 +11,9 @@ import { initQuestions } from './questions.js';
 import { initResult } from './result.js';
 import { quizQuestions, quizResults } from './data/quizContent.js';
 
+// Module APIs
+let introModule, questionsModule, resultModule;
+
 // 應用程式狀態
 const AppState = {
     currentPage: 'preload',
@@ -101,12 +104,32 @@ async function switchPage(targetPage, delay = 0) {
     
     // 淡出當前頁面
     const currentPageElement = elements.pages[AppState.currentPage];
-    if (currentPageElement) {
+    if (currentPageElement && currentPageElement.classList.contains('page--active')) { // Ensure it was active
+        const fadeOutPromise = new Promise(resolve => {
+            const transitionEndHandler = (event) => {
+                // Make sure to listen to the correct property, e.g., opacity
+                if (event.target === currentPageElement && event.propertyName === 'opacity') {
+                    currentPageElement.removeEventListener('transitionend', transitionEndHandler);
+                    resolve();
+                }
+            };
+            currentPageElement.addEventListener('transitionend', transitionEndHandler);
+
+            // Fallback timeout to prevent indefinite waiting if transitionend doesn't fire
+            // This duration should be slightly longer than the expected CSS transition duration.
+            // The CSS transition for .page is opacity var(--duration-slow) which is 500ms.
+            setTimeout(() => {
+                currentPageElement.removeEventListener('transitionend', transitionEndHandler);
+                resolve(); // Resolve to avoid blocking indefinitely
+            }, 600); // 500ms transition + 100ms buffer
+        });
+
+        currentPageElement.classList.remove('page--active');
+        await fadeOutPromise; // Wait for the CSS transition to complete
+    } else if (currentPageElement) {
+        // If it wasn't active, no need to wait for transition, but ensure it's hidden.
         currentPageElement.classList.remove('page--active');
     }
-    
-    // 等待淡出動畫完成
-    await new Promise(resolve => setTimeout(resolve, 500));
     
     // 淡入目標頁面
     const targetPageElement = elements.pages[targetPage];
@@ -129,8 +152,8 @@ function handlePageEnter(page) {
     switch (page) {
         case 'intro':
             // 觸發 Intro 頁面動畫
-            if (window.introPageEnter) {
-                window.introPageEnter();
+            if (introModule && introModule.pageEnter) {
+                introModule.pageEnter();
             }
             break;
         case 'questions':
@@ -166,8 +189,8 @@ function loadQuestion(questionIndex) {
     
     // 更新背景圖片
     const imagePath = `assets/images/question-bg-${questionIndex + 1}.webp`;
-    if (window.updateQuestionBackground) {
-        window.updateQuestionBackground(imagePath);
+    if (questionsModule && questionsModule.updateQuestionBackground) {
+        questionsModule.updateQuestionBackground(imagePath);
     } else {
         // 直接更新（如果動畫函數還未載入）
         elements.questions.bgImage.src = imagePath;
@@ -178,8 +201,8 @@ function loadQuestion(questionIndex) {
     elements.questions.options.innerHTML = '';
     
     // 使用動畫載入問題（將在 questions.js 中實現）
-    if (window.loadQuestionWithAnimation) {
-        window.loadQuestionWithAnimation(question, handleAnswer);
+    if (questionsModule && questionsModule.loadQuestionWithAnimation) {
+        questionsModule.loadQuestionWithAnimation(question, handleAnswer);
     }
 }
 
@@ -206,17 +229,14 @@ function handleAnswer(option, optionIndex) {
         AppState.q9Choice = option.optionId;
     }
     
-    // 執行轉場動畫後載入下一題
-    if (window.transitionToNextQuestion) {
-        window.transitionToNextQuestion().then(() => {
-            loadQuestion(AppState.currentQuestion + 1);
-        });
-    } else {
-        // 如果動畫函數不可用，直接載入下一題
-        setTimeout(() => {
-            loadQuestion(AppState.currentQuestion + 1);
-        }, 500);
-    }
+    // The previous question has already transitioned out at this point
+    // (option click in loadQuestionWithAnimation handles the exit animation).
+    // Load the next question.
+    loadQuestion(AppState.currentQuestion + 1);
+    // Optional: Add a small delay here if needed for pacing before next question's animation starts
+    // setTimeout(() => {
+    //     loadQuestion(AppState.currentQuestion + 1);
+    // }, 100);
 }
 
 /**
@@ -227,8 +247,8 @@ function displayResult() {
     const finalResult = calculateFinalResult();
     
     // 顯示結果內容
-    if (window.displayResultContent) {
-        window.displayResultContent(finalResult, elements.result);
+    if (resultModule && resultModule.displayResultContent) {
+        resultModule.displayResultContent(finalResult, elements.result);
     }
 }
 
@@ -295,9 +315,9 @@ async function init() {
     
     // 初始化各個模組
     await initPreload(elements.preload, () => switchPage('intro', 300));
-    await initIntro(elements.intro, () => switchPage('questions'));
-    await initQuestions(elements.questions);
-    await initResult(elements.result, () => {
+    introModule = await initIntro(elements.intro, () => switchPage('questions'));
+    questionsModule = await initQuestions(elements.questions);
+    resultModule = await initResult(elements.result, () => {
         resetAppState();
         switchPage('intro');
     });

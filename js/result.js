@@ -203,7 +203,7 @@ export async function initResult(domElements, onRestart) {
     elements = domElements;
     
     // 設定全域函數供 main.js 調用
-    window.displayResultContent = displayResultContent;
+    // window.displayResultContent = displayResultContent; // Will be returned
     
     // 綁定重新開始按鈕
     elements.restartBtn.addEventListener('click', () => {
@@ -215,6 +215,10 @@ export async function initResult(domElements, onRestart) {
             onRestart();
         }
     });
+
+    return {
+        displayResultContent
+    };
 }
 
 /**
@@ -235,5 +239,5 @@ function resetResultContent() {
  */
 export function cleanupResult() {
     // 清除全域函數
-    delete window.displayResultContent;
+    // delete window.displayResultContent; // No longer needed
 }
